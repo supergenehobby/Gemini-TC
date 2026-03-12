@@ -1,0 +1,4355 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solitaire Tripeaks | Master Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --bg-main: #f1f5f9;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; scroll-behavior: smooth; }
+        body { 
+            font-family: "Pretendard", sans-serif;
+            margin: 0; display: flex;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+        }
+
+        /* Sidebar Sidebar */
+        .sidebar {
+            width: 320px; height: 100vh; position: fixed;
+            background: var(--sidebar-bg); border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem; overflow-y: auto;
+        }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--primary); margin-bottom: 2.5rem; display: flex; align-items: center; gap: 10px; }
+        .nav-list { list-style: none; padding: 0; }
+        .nav-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0.8rem 1rem; color: var(--secondary); text-decoration: none;
+            border-radius: 10px; transition: 0.2s; margin-bottom: 4px; font-weight: 500;
+        }
+        .nav-link:hover { background: #f8fafc; color: var(--primary); }
+        .nav-link.active { background: var(--primary); color: white; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); }
+
+        /* Main Content */
+        main { margin-left: 320px; flex: 1; padding: 3rem 5%; }
+        
+        /* Section Dashboard Header */
+        .section-dashboard {
+            display: flex; gap: 20px; margin-bottom: 2.5rem;
+        }
+        .stat-box {
+            background: #f8fafc; border: 1px solid var(--border);
+            padding: 1rem 1.5rem; border-radius: 12px; min-width: 100px;
+            display: flex; flex-direction: column;
+        }
+        .stat-box.primary { background: #eff6ff; border-color: #bfdbfe; flex: 1; }
+        .stat-box .label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .stat-box .value { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
+        .stat-box.primary .value { color: var(--primary-dark); }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--card-bg); border-radius: 20px; padding: 3rem;
+            margin-bottom: 4rem; border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            scroll-margin-top: 2rem;
+        }
+
+        /* Grid Enhancements */
+        .markdown-body h2 { 
+            font-size: 1.5rem; margin-top: 3rem; border-bottom: 2px solid var(--bg-main); padding-bottom: 0.5rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+        
+        /* Flow Visualization */
+        .flow-viz pre {
+            background: #0f172a; color: #38bdf8; border-left: 4px solid var(--primary);
+            padding: 2rem; border-radius: 12px; font-family: 'Fira Code', monospace;
+        }
+
+        /* OCR Details */
+        .ocr-details {
+            margin-top: 4rem; border: 1px dashed var(--border); border-radius: 12px; padding: 1rem;
+        }
+        .ocr-details summary { font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 0.5rem; }
+        .ocr-details summary:hover { color: var(--primary); }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin: 2rem 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        th { background: #f8fafc; padding: 1.2rem; text-align: left; font-size: 0.85rem; text-transform: uppercase; color: var(--secondary); }
+        td { padding: 1.2rem; border-top: 1px solid var(--border); font-size: 0.95rem; }
+
+        @media (max-width: 1100px) {
+            .sidebar { width: 80px; padding: 2rem 0.5rem; }
+            .sidebar .logo span, .sidebar .nav-link span { display: none; }
+            main { margin-left: 80px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="logo"><i class="fas fa-th-large"></i> <span>Solitaire</span></div>
+        <ul class="nav-list">
+            <li><a href="#section-01__EA_B0_9C_EC_9A_94" class="nav-link"><i class="fas fa-file-alt"></i> 01_개요</a></li><li><a href="#section-02__EB_A1_9C_EB_B9_84" class="nav-link"><i class="fas fa-file-alt"></i> 02_로비</a></li><li><a href="#section-03__EB_A1_9C_EB_B9_84__ED_8C_9D_EC_97_85" class="nav-link"><i class="fas fa-file-alt"></i> 03_로비_팝업</a></li><li><a href="#section-04__EC_9D_B8_EA_B2_8C_EC_9E_84" class="nav-link"><i class="fas fa-file-alt"></i> 04_인게임</a></li><li><a href="#section-05__EA_B8_B0_ED_83_80__ED_8C_9D_EC_97_85" class="nav-link"><i class="fas fa-file-alt"></i> 05_기타_팝업</a></li><li><a href="#section-06__EC_BB_A8_ED_85_90_EC_B8_A0" class="nav-link"><i class="fas fa-file-alt"></i> 06_컨텐츠</a></li><li><a href="#section-07__EC_8B_9C_EC_8A_A4_ED_85_9C" class="nav-link"><i class="fas fa-file-alt"></i> 07_시스템</a></li><li><a href="#section-08__EC_BB_A8_ED_85_8D_EC_8A_A4_ED_8A_B8__EC_A0_84_ED_99_98" class="nav-link"><i class="fas fa-file-alt"></i> 08_컨텍스트_전환</a></li><li><a href="#section-09__ED_8A_9C_ED_86_A0_EB_A6_AC_EC_96_BC" class="nav-link"><i class="fas fa-file-alt"></i> 09_튜토리얼</a></li><li><a href="#section-10__EC_86_8C_EC_85_9C" class="nav-link"><i class="fas fa-file-alt"></i> 10_소셜</a></li><li><a href="#section-11__EC_88_98_EC_9D_B5_ED_99_94" class="nav-link"><i class="fas fa-file-alt"></i> 11_수익화</a></li><li><a href="#section-12__EA_B8_B0_ED_83_80" class="nav-link"><i class="fas fa-file-alt"></i> 12_기타</a></li><li><a href="#section-13__EB_A7_88_EC_9D_BC_EC_8A_A4_ED_86_A4" class="nav-link"><i class="fas fa-file-alt"></i> 13_마일스톤</a></li><li><a href="#section-14__EB_B6_80_EB_A1_9D" class="nav-link"><i class="fas fa-file-alt"></i> 14_부록</a></li>
+        </ul>
+    </nav>
+    <main>
+        <header style="margin-bottom: 4rem;">
+            <h1 style="font-size: 3.5rem; font-weight: 900; margin: 0;">Master Reference</h1>
+            <p style="color: var(--secondary); font-size: 1.2rem;">Visual documentation for Solitaire Garden City</p>
+        </header>
+        
+        
+        <article id="section-01__EA_B0_9C_EC_9A_94" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">01</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">60%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">개요</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-420">개요 (Pages 4–20)</h1>
+<h2 id="overview">Overview</h2>
+<p>게임 플로우, 기본 룰, 카드/재화 구성, 게임 타이틀/아이콘/스플래시</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 4 (Text) ---
+개요
+
+--- Page 4 (Images via OCR) ---
+
+--- Page 5 (Text) ---
+개요 (1/2) 
+5
+항목 
+내용 
+게임명 
+(가제) Solitaire Garden City 
+장르 
+Solitaire (Tripeaks 기반) + City Decoration 
+타겟 
+북미 40-65세 여성 중심 
+조작 
+탭 중심 단순 조작 / 느린 템포에서도 피로 없는 UX 
+핵심 루프 
+솔리테어 플레이 → 별/재화 획득 → 도시 공간 복구 및 꾸미기 → 새로운 도시 해금 
+게임 컨셉 
+“하루에 한 번, 나만의 도시를 가꾸는 시간&quot; 
+네러티브 
+“오랫동안 비어 있던 도시가 있습니다. 
+사람들이 떠난 자리에는 조용한 공원, 낡은 카페, 불이 꺼진 극장만이 남아 있죠. 
+당신은 이 도시에 다시 불을 켜는 사람입니다. 
+급할 필요는 없습니다. 
+카드를 한 장씩 정리하듯, 도시도 천천히 제자리를 찾아갑니다.” 
+코어 아이디어 
+플레이어는 영웅이나 경쟁자가 아닌 ‘관리자·주인’의 위치 
+목표는 승부가 아니라 회복·정돈·완성 
+각 건물은 “성취의 증표”이며,  플레이 기록이 아닌 공간의 변화가 진척을 말해줌 
+리뷰 제출 날짜 목표 
+2026년 4월 17일 
+INDEX 
+
+--- Page 6 (Text) ---
+개요 (2/2) 
+6
+● 게임 플레이 
+●
+TriPeaks 규칙 기반의 클래식 솔리테어 
+●
+시간 제한, 압박 요소 최소화 
+●
+연속 스트릭·부스트는 존재하지만 실패 패널티는 완만 
+●
+한 판의 길이는 짧고, 언제든 중단 가능 
+● 도시 건설 / 꾸미기 메타 
+●
+솔리테어 클리어 시 전용 재화 획득 
+●
+전용 재화를 사용해 도시의 건물·공간을 단계적으로 복구 
+●
+각 공간은 정해진 테마 + 선택형 데코레이션 구조 
+○
+주요 도시의 랜드마크 중심 / 상상속 도시 
+●
+“꾸미기 = 과시”가 아니라  “정리되고 예뻐지는 과정 자체가 보상” 
+● 타겟 친화적 차별화 요소 
+●
+복잡한 시스템 설명 최소화 
+●
+실패에 대한 재도전 압박 제거 
+●
+아트는 동글동글 귀엽고 부드럽게 / 자연광 / 따뜻한 색감 중심  
+(리얼리스틱 지양) 
+●
+UI는 대비가 명확하고, 작은 텍스트 사용 지양 
+ 
+● 수익화 요소 
+●
+보상형 광고: 추가 골드 혹은 아이템 획득, 인게임 부스트 획득 등 
+●
+인터스티셜은 세션 종료 후 제한적 노출 
+●
+IAP는 ‘편의성 중심’ (광고 제거, 추가 선택권 등) 
+ 
+● 소셜 요소 
+●
+ (작성중) 
+● 확장 요소 
+●
+시즌별 도시 테마 추가 (Spring Garden, Seaside Town 등) 
+●
+명절/시즌에 맞춘 한정 공간 
+INDEX 
+
+--- Page 7 (Text) ---
+게임 플로우 (프로토 타입 바로가기) 
+7
+●
+NRU 
+○
+진입 엔트리 및 컨텍스트에 관계 없이 모두 지정된 튜토리얼 스테이지 이동 
+■
+P2P 컨텍스트 진입 : 첫 판 P2P 메세지 전송 O, 토너먼트 생성 시도 X 
+■
+토너먼트 컨텍스트 진입 : 첫 판 솔로 전환, 토너먼트 생성/공유 시도 X 
+○...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 4–20
+<strong>Understanding Score</strong>: 60점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-02__EB_A1_9C_EB_B9_84" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">02</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">60%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">로비</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-2126">로비 (Pages 21–26)</h1>
+<h2 id="overview">Overview</h2>
+<p>로비 UI, 구역 리스트 팝업, 꾸미기 화면, 해머 획득 튜토리얼</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 21 (Text) ---
+로비 탭
+
+--- Page 21 (Images via OCR) ---
+
+--- Page 22 (Text) ---
+로비 UI 
+22
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+5 
+이벤트 3종
+- 요일에 따라 활성화/비활성화 아이콘 노출 
+- UTC+0 기준 이벤트 남은 시간 표시 
+  (퍼즐블록마스터와 동일한 규칙) 
+- 시간 표기와 별개로 프로그레스 게이지 표시 필요 
+- 랭킹 이벤트의 경우 내 현재 랭크 표시 필요 
+- 해당 영역을 터치하면 각 이벤트 팝업 노출 
+ 
+6 
+테스크/룰렛
+- 데일리 테스크 / 룰렛 아이콘 노출 
+- 수령 가능 보상 있을 시 Claim 표시/Red dot 노출 
+- 해당 영역을 터치하면 테스크/룰렛 팝업 노출 
+T_CLAIM 
+7 
+IAP 상품
+- 해당 영역을 터치하면 IAP 팝업(추가예정) 노출 
+ 
+8 
+구역 진척도 
+- 구역 꾸미기 프로그레스 노출 
+-     번 보유 재화로 꾸미기가 가능한 상태면 Red dot 노출 
+- 해당 영역을 터치하면 화면 UI 숨김 처리 -&gt; 꾸미기 모드 
+진입 
+T_AREA_NUMBER 
+9 
+리더보드 
+- 해당 영역을 터치하면 각 리더보드 팝업 노출 
+ 
+10 
+토너먼트 
+- 해당 영역을 터치하면 각 토너먼트 팝업 노출 
+ 
+11 
+콜렉션 
+- 새로 받은 덱이 있거나 맞출 수 있는 퍼즐 조각이 있다면 
+Red dot 노출 
+- 해당 영역을 터치하면 각 콜렉션 팝업 노출 
+ 
+12 
+방치 골드 
+- n시간 마다 충전되는 방치 보상 골드 (최대 6자리) 
+- 로비 진입 시           말풍선 2초간 노출 (+터치 유도 이펙트) 
+- 보상 수령 완료 시          버튼으로 전환 
+T_COLLECT 
+T_COLLECT_INFO 
+T_COLLECT_COOLDOWN 
+13 
+게임 시작 
+- Level + 9999로 표기 
+- 해당 레벨의 난이도에 맞게 버튼 색상 전환 
+        -&gt;         -&gt;           순서대로 보통 / 어려움 / 매우 어려움 
+- 터치 유도 이펙트 재생 (스케일 업&amp;다운) 
+- 꾸미기 강제 필요 시 잠금 + 터치 시 플로팅 알럿 노출 
+T_LEVEL 
+T_FINISH_DECO_FIRST 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+12-1 
+12-2 
+13 
+13-1 
+13-2 
+2 
+NO. 
+제목 
+내용 
+string_code 
+1 
+재화: 골드  - 게임 시작, 부스트 구매 등에 사용되는 재화 
+- 해당 영역을 터치하면 상점 팝업 노출 
+- 
+2 
+재화: 망치  - 구역 꾸미기에 사용되는 재화 
+- 게임 플레이를 통해서만 획득할 수 있음 
+- 
+3 
+설정 아이콘 - 해당 영역을 터치하면 설정 팝업 노출 
+- 
+4 
+우편함 
+- 해당 영역을 터치하면 우편함 팝업 노출 
+- 미열람 메일이나 미수령 보상이 있다면 Red dot 노출 
+- 
+12-1 
+12-2 
+13 
+13-1 
+13-2 
+INDEX 
+
+--- Page 22 (Images via ...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 21–26
+<strong>Understanding Score</strong>: 60점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-03__EB_A1_9C_EB_B9_84__ED_8C_9D_EC_97_85" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">03</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">90%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">로비_팝업</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-2740">로비 팝업 (Pages 27–40)</h1>
+<h2 id="overview">Overview</h2>
+<p>토너먼트, 리더보드, 콜렉션, 출석체크, 데일리 테스크, 룰렛, 우편함, 설정, 상점, 보상 수령, 팝업 플로우</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 27 (Text) ---
+로비 팝업
+
+--- Page 27 (Images via OCR) ---
+
+--- Page 28 (Text) ---
+로비 - 토너먼트 팝업 
+28
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+- 
+- 
+- 토너먼트에서의 순위 판단은 
+  스트릭 성공 시 획득하는       재화로 함 
+  해당 레벨 성공 시 획득하는 골드 재화로 함 
+ 
+1 
+팝업 타이틀
+- 토너먼트 팝업 타이틀 표시 
+T_TOURNAME
+NT_TITLE_1-10 
+2  토너먼트 타이틀 - 각 토너먼트의 타이틀 표시 
+ 
+3 
+남은 시간 
+- 토너먼트 종료까지 남은 시간 표시 
+ 
+4 
+리더보드 
+- 1-3위 표시 + 내 순위 표시 
+- 스크롤 없음. 고정 노출 
+ 
+5 
+페이지 
+인디케이터 
+- 좌우 화살표를 눌러 다음 페이지로 이동 
+- 첫번째 페이지라면 좌측 화살표 숨김 
+- 마지막 페이지라면 우측 화살표 숨김 
+- 총 5개 토너먼트 노출 (참여하면 제거) 
+ 
+6 
+토너먼트 참여   - 터치 시 해당 토너먼트로 입장 
+T_JOIN_TOURN
+AMENT 
+7 
+토너먼트 생성  - 터치 시 토너먼트를 생성하며 입장 
+T_CREATE_TOU
+RNAMENT 
+8 
+닫기 버튼 
+- 터치 시 팝업 닫기 
+ 
+2 
+3 
+4 
+5 
+5 
+6 
+7 
+8 
+1 
+INDEX 
+v1.3 
+
+--- Page 28 (Images via OCR) ---
+
+[Image 1 - OCR Result]
+Tournament Name
+
+safe area
+
+EQ mo
+
+reate
+urnament
+
+668 ©) ‘*: Esther @ 0)
+
+Join Tournament
+
+safe area
+
+
+[Image 2 - OCR Result]
+Tournament Name Tournament Name
+
+safe area safe area
+
+_ Join Tournament
+
+
+
+--- Page 29 (Text) ---
+로비 - 리더보드 팝업 
+29
+INDEX 
+1 
+3 
+7 
+4 
+NO. 
+제목 
+내용 
+string_code 
+- 
+- 
+- 리더보드에서의 순위 판단은 
+  스트릭 성공 시 획득하는       재화로 함 
+  (로비 아이콘에 표현?) 
+ 
+1 
+팝업 타이틀
+- 리더보드 팝업 타이틀 표시 
+T_LEADERBOARD
+_TITLE 
+2 
+분류 탭 
+- Global / Friends 로 나뉨 
+T_GLOBAL 
+T_FRIENDS 
+3  이번주 리더보드 - 주 1회 UTC+0 기준 월요일 0시에 리셋 
+T_LEADERBOARD
+_WEEKLY 
+4 
+유저 리스트 
+- 순위 + 유저 프로필 + 유저이름 + 스트릭스타 개수 
+- 팝업 진입 시 내가 중앙 + 2단계 윗순위 + 2단계 
+아랫순위 
+ 
+5 
+ 윗순위 보기 
+- 터치 시 1-5위 표시 
+- 1-5위 표시 중일 땐 숨김처리  
+ 
+6 
+아랫순위 보기 
+- 윗순위 보는 상태에서 터치 시 6-10위 표시 
+- 위의 상태에서 한번 더 터치 시  
+   “내가 중앙 + 2단계 윗순위 + 2단계 아랫순위” 표시 
+...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 27–40
+<strong>Understanding Score</strong>: 90점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-04__EC_9D_B8_EA_B2_8C_EC_9E_84" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">04</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">90%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">인게임</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-4154">인게임 (Pages 41–54)</h1>
+<h2 id="overview">Overview</h2>
+<p>pre레벨 팝업/부스터, 인게임 UI, 부스터, 기믹(특수카드), 레벨 포기/성공 팝업, 골드 충전, 연출 레퍼런스</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 41 (Text) ---
+인게임
+
+--- Page 41 (Images via OCR) ---
+
+--- Page 42 (Text) ---
+인게임 - pre레벨 팝업 
+42
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+1 
+골드 재화  - 골드 재화 UI 표시. 터치 시 상점으로 이동 
+ 
+2 
+레벨 
+- 해당 레벨 표시 
+T_LEVEL 
+3 
+pre-부스터 
+- 미리 장착할 수 있는 부스터 표시 
+- 선택 시 바로 횟수 or 골드가 차감되며, 선택 해제시 다시 
+회수 됨 
+- 버튼 상태 표시 및 부스터 종류는 다음 슬라이드에서 확인 
+T_SELECT_BOOS
+TER 
+ 
+4 
+베팅 영역 
+- 입장료를 x1 / x2 / x4로 베팅하고 보상도 해당 배수로 받을 
+수 있는 시스템 (각 배수의 해금 시점 밸런스시트 &gt; unlock에서 관리) 
+- 미해금 상태에서 터치 시 플로팅 알럿으로 해금 시점 노출 
+- 버튼 터치 시 차례대로 배수가 바뀜 (색상 구분되어야 함) 
+  (x4 -&gt; x1) 
+ 
+ 
+ 
+ 
+- 고정으로 3종의 보상 노출 + 퍼즐 피스 1종 + 진행중인 
+이벤트에 따라 이벤트 재화 최대 2종 노출 
+T_REWARD_MUL
+TIPLIER 
+5 
+레벨 
+시작하기 
+- 터치 시 해당 레벨을 시작 (=인게임으로 이동) 
+- 터치 시 골드 부족하면 골드 충전 팝업 노출 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+T_PLAY 
+T_FREE 
+6 
+이벤트 
+- 현재 진행중인 이벤트 표시 (마일스톤=게이지 / 랭킹=순위)   
+7 
+친구순위 
+- 래당 레벨의 클리어 소요시간 보상 골드 기준 친구 리더보드 
+- 상위 4명까지 표시 (스크롤 X) 
+- ‘Invite+’버튼 터치 시 친구 초대 API 호출 
+T_INVITE 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+[무료 티켓 보유 수량 없을 시 
+노출] 
+[무료 티켓 보유 수량 있을 시 
+노출] 
+[무료 티켓 보유 수량 있고   
+x2 / x4 배팅 시 노출] 
+[기간제 무제한 티켓 보유 시 
+노출] 
+INDEX 
+v1.1 
+
+--- Page 42 (Images via OCR) ---
+
+[Image 1 - OCR Result]
+(2) 9,999,999 ©&gt;
+Level 99999 XG
+e)
+
+Select Boosters: x9 Rewards:
+23h 59m
+(J ©
+safe area x9) x9) x2)
+Fiona) CEEEIS me) ie 5S
+
+23h 59m , username
+PLAY 999.999 Si==
+Ky y xl 1
+
+
+
+--- Page 43 (Text) ---
+인게임 - pre레벨 부스터 
+43
+INDEX 
+NO. 
+제목 
+내용 
+ 
+- 
+Pre-부스터 
+상태 
+- 미리 장착할 수 있는 부스터 표시 
+- 선택 시 바로 횟수 or 골드가 차감되며, 선택 해제시 다시 
+회수 됨 
+- 총 5가지 형태로 표시 
+ 
+ 
+ 
+ 
+- 3-1: 보유 수량이 없을 시 노출 
+- 3-2: 장착 시 노출 
+- 3-3: 보유 수량이 있을 시 노출 
+- 3-4: 기간제 무제한 아이템이 있을 시...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 41–54
+<strong>Understanding Score</strong>: 90점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-05__EA_B8_B0_ED_83_80__ED_8C_9D_EC_97_85" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">05</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">60%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">기타_팝업</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-5559">기타 팝업 (Pages 55–59)</h1>
+<h2 id="overview">Overview</h2>
+<p>에러 팝업, 플로팅 알럿, 정책 팝업, 봇구독/숏컷 추가 팝업</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 55 (Text) ---
+기타 팝업
+
+--- Page 55 (Images via OCR) ---
+
+--- Page 56 (Text) ---
+기타 팝업 - 에러 팝업 
+56
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+1 
+팝업 타이틀 - 에러 팝업 타이틀 표시 
+T_ERROR_POPUP_TITLE 
+2 
+에러 메세지 
+내용 
+- 에러 메세지 내용을 표시 
+T_ERROR_RESTART 
+T_ERROR_NO_RESTART 
+3 
+에러 코드  - 에러 코드 표시 
+ 
+4 
+확인 버튼 
+- 버튼 터치 시  
+   -&gt; 재시작 필요한 경우 재시작 
+   -&gt; 재시작 필요없는 경우 팝업 닫기 
+ 
+5 
+닫기 버튼 
+- 버튼 터치 시  
+   -&gt; 재시작 필요한 경우 재시작 
+   -&gt; 재시작 필요없는 경우 팝업 닫기 
+ 
+1 
+2 
+3 
+4 
+5 
+INDEX 
+
+--- Page 56 (Images via OCR) ---
+
+[Image 1 - OCR Result]
+x
+
+Oops!
+
+Sorry, Something went wrong.
+Please try again in a few minutes.
+
+[ERRORCODE : 9999]
+
+OK
+
+
+--- Page 57 (Text) ---
+기타 팝업 - 플로팅 알럿 
+57
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+1 
+플로팅 알럿- 화면 중잉에 등장 후 1.5초 대기 후 비노출 처리 
+ 
+1 
+INDEX 
+
+--- Page 57 (Images via OCR) ---
+
+[Image 1 - OCR Result]
+safe area
+
+
+
+--- Page 58 (Text) ---
+기타 팝업 - 정책 팝업 
+58
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+1 
+팝업 타이틀 
+- 정책 팝업 타이틀 표시 
+T_POLICY_POPUP_TITLE 
+2 
+개인정보정책  - 개인정보 정책 팝업 
+T_PRIVACY_POLICY 
+2 
+1 
+INDEX 
+
+--- Page 58 (Images via OCR) ---
+
+[Image 1 - OCR Result]
+FAQs
+1. How does Supergene protect my privacy?
+We, Supergene Inc., understand the importance of your privacy. This
+Privacy Policy is designed to inform you on how we use the information
+CSOEIe3 we collect and how we protect your data. We DO NOT STORE any SHE
+personal information, and we DO NOT SELL your data to any third-party
+company.
+
+2.1 don't want to play a game by Supergene anymore. How do | remove
+the game?
+From your News Feed, click the arrow found at ...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 55–59
+<strong>Understanding Score</strong>: 60점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-06__EC_BB_A8_ED_85_90_EC_B8_A0" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">06</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">60%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">컨텐츠</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-6064">컨텐츠 (Pages 60–64)</h1>
+<h2 id="overview">Overview</h2>
+<p>이벤트 3종 개요, 카드 마일스톤, 승점 마일스톤, 클리어수 랭킹 이벤트 UI</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 60 (Text) ---
+컨텐츠: 이벤트
+
+--- Page 60 (Images via OCR) ---
+
+--- Page 61 (Text) ---
+이벤트 개요 
+61
+INDEX 
+이벤트명 
+무엇을 하는가?  
+언제 하는가? 
+어떻게 보상을 받는가?  
+기획 의도 및 목적  
+Royal Color 
+Collection 
+ 
+[수집] 퍼즐 플레이 중 제거한 특정 
+색상 카드(검정/빨강)를 자동 
+카운트하여 마일스톤 달성 
+ 
+ 
+ 
+ 
+ 
+Part 1 (월~수): 검은 카드 
+Part 2 (목~토): 빨간 카드 
+(주중 상시 진행) 
+[즉시 지급] 
+목표 수량 달성 시 로비에서 
+전면 팝업 노출 후 즉시 획득 
+• 주중 리텐션 방어 
+별도 미션 없이 플레이만으로 자연스럽게 참여를 유도하여, 
+주중 접속 동기 부여 및 재화 공급. 
+ 
+• 스트레스 프리(Stress-Free) 
+실패해도 카운트되는 구조로 누구나 참여 가능. 
+Golden Stamp 
+Tour 
+ 
+[스킬/도전] 레벨 승리 시 스탬프 
+포인트를 획득. 
+First Try(첫 시도) 승리 시 +a 
+보너스 포인트 적용 
+ 
+ 
+ 
+ 
+매주 화요일 ~ 목요일 
+(컬러 수집과 기간 중첩) 
+[즉시 지급] 
+목표 수량 달성 시 로비에서 
+전면 팝업 노출 후 즉시 획득 
+• BM 및 아이템 소진 유도 
+'한 번에 깨야 보너스 포인트'라는 규칙으로 신중한 
+플레이를 유도하고, 위기 시 이어하기/부스트 사용을 촉진. 
+ 
+• 실력 보상 (Skill-based) 
+플레이 실력에 대한 확실한 피드백 제공. 
+The Great City 
+Race 
+ 
+[경쟁] 비슷한 그룹(10명) 내에서  
+기간 내 레벨 클리어 횟수로 순위 
+경쟁 
+ 
+ 
+ 
+ 
+ 
+ 
+매주 금요일 ~ 일요일 
+(주말 피크 타임) 
+[사후 지급] 
+이벤트 종료 후 최종 순위에 
+따라 우편함으로 차등 지급 
+• 플레이 타임(Playtime) 증대 
+시간적 여유가 있는 주말에 경쟁심을 자극하여 몰입도 
+강화. 
+ 
+• Top-Tier 경쟁 유도 
+상위권 보상을 통해 하드코어 유저들의 경쟁 욕구 자극. 
+INDEX 
+
+--- Page 62 (Text) ---
+카드 마일스톤 이벤트 UI 
+62
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+1 
+팝업 타이틀 - 카드 마이스콘 이벤트 팝업 타이틀 표시 
+T_EVENT_BLK_CARD_TITLE 
+T_EVENT_RED_CARD_TITLE 
+2 
+종료까지 
+남은 시간 
+- 24시간 초과일 경우: 99days 
+- 24시간 이하일 경우: 99:99:99 
+- UTC+0 기준 
+ 
+3 
+이벤트 설명 - 이벤트 설명 표시 (한줄) 
+T_EVENT_BLK_CARD_DESC 
+T_EVENT_RED_CARD_DESC 
+4 
+진행 게이지 
+- 이벤트 마일스톤 보상 
+- 이벤트 메인 재화 아이콘 (블랙카드 / 레드카드) 
++ 게이지바 + 보상 (최대 1종) 
+-         : 수령 완료 보상 
+-         : 수령 예정 보상 
+-         : 수령 예정 보상 (...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 60–64
+<strong>Understanding Score</strong>: 60점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-07__EC_8B_9C_EC_8A_A4_ED_85_9C" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">07</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">90%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">시스템</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-6576">시스템 (Pages 65–76)</h1>
+<h2 id="overview">Overview</h2>
+<p>참가비 및 베팅, 난이도 티어 및 보정, 동적 난이도 제어, 스트릭미터 시스템, 콜렉션 시스템, 이벤트 시스템</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 65 (Text) ---
+시스템
+
+--- Page 65 (Images via OCR) ---
+
+--- Page 66 (Text) ---
+참가비 및 베팅 
+66
+INDEX 
+[시스템 개요] 
+1.1 정의 
+●
+스테이지 진입 시, 레벨구간에 따라 책정된 입장료(골드)를 베팅 배수만큼 지불하고, 승리 시 주요 재화를 배수로 획득하는 
+시스템 
+1.2 기획 의도 
+●
+경제 순환 가속: 레벨이 오를수록 입장료가 상승하여 인플레이션을 방지 
+●
+전략적 투자: 자신이 있는 구간에서 2배/4배 베팅을 통해 성장을 가속화 
+●
+목표 유도: 많은 수량의 퍼즐 피스(2,4배 전용)와 스트릭 스타 수집을 위해 고배율 플레이를 유도 
+ 
+2.1 베팅 기능 해금 (밸런스 시트 &gt; unlock) 
+●
+베팅 배수는 콘텐츠 해금 시스템에 의해 단계적으로 열림 
+ 
+ 
+ 
+ 
+ 
+ 
+3. 참가비 계산 (밸런스 시트 &gt; level_entry_tier, item_list 참고) 
+●
+핵심 공식 
+ﬁnal_price = ﬂoor(min(current_price, max_price)) 
+●
+계산 변수: 
+current_price = base_price × (1 + use_count_increase_rate / 10000) ^ use_count 
+max_price = entry_cost × betting × (use_count_max_ratio / 10000) 
+base_price = entry_cost × betting × (entry_cost_ratio / 10000) 
+ 
+entry_cost_ratio =  
+  if interval_type == &quot;tier_undo&quot; → level_tier.undo_ratio 
+  if interval_type == &quot;tier_extra_deck&quot; → level_tier.extra_deck_ratio 
+  if interval_type == &quot;ﬁxed&quot; → item_list.entry_cost_ratio 
+ 
+콘텐츠 ID 
+해금 조건 (Level) 
+기능 
+content_betting_1 
+Lv 3 (가데이터) 
+x1 베팅 (기본) 
+content_betting_2 
+Lv 10 (가데이터) 
+x2 베팅 사용 가능 
+content_betting_4 
+Lv 20 (가데이터) 
+x4 베팅 사용 가능 
+INDEX 
+[note] 
+●RU 접속&gt; 자동 인게임 진입 시 적용되는 입장료와 베팅 
+배율 
+○접속 시 pre-level 팝업 노출 
+○골드 부족 시 로비로 이동 
+○라이브 후 a/b 
+■x1 배율로 최초 1회 무료 입장 
+●광고 시청 불가능한 경우 
+○안내 팝업 (광고 불가하여 보상 지급) 노출 후 무료 
+지급 (횟수 제한) 
+○게임 안정 화 이 부분은 CP노출로 대체 
+v1.5 
+1.6 
+
+--- Page 67 (Text) ---
+난이도 티어 및 보정 시스템 
+(1/3) 
+67
+INDEX 
+시스템 개요  
+1.1 정의 
+●
+게임의 난이도 구간(Tier)을 정의하고, 각 구간별 기본 보상과 동적 난이도 조절(DDA, Dyna...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 65–76
+<strong>Understanding Score</strong>: 90점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-08__EC_BB_A8_ED_85_8D_EC_8A_A4_ED_8A_B8__EC_A0_84_ED_99_98" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">08</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">70%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">컨텍스트_전환</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-7779">컨텍스트 전환 (Pages 77–79)</h1>
+<h2 id="overview">Overview</h2>
+<p>컨텍스트 전환 화면 및 로직</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 77 (Text) ---
+컨텍스트 전환
+
+--- Page 77 (Images via OCR) ---
+
+--- Page 78 (Text) ---
+NO. 
+제목 
+내용 
+string_code 
+1 
+P2P 
+- 두 장의 카드(예: ♠K vs ♥Q)가 중앙에서 마주 보며 
+겹쳐짐 
+- 카드 가장자리에 은은한 골드 글로우 
+- 중앙에 절제된 VS 마크 
+ 
+- 텍스트 예시: 
+  -&gt; 타이틀: Solitaire TriPeaks: Duel 
+  -&gt; 하단 설명: Outplay your friend. 
+T_P2P_TITLE 
+T_P2P_DESC 
+2 
+친구 토너먼트 
+- 카드 더미가 컵(트로피) 형태로 쌓여 있음 
+- 트로피 중앙에 작은 왕관 엠블럼 
+ 
+- 텍스트 예시: 
+  -&gt; 타이틀: Solitaire TriPeaks: Friends Cup 
+  -&gt; 하단 설명: Compete with friends. 
+T_FRIENDS_TOURNAME
+NT_TITLE 
+T_FRIENDS_TOURNAME
+NT_DESC 
+3 
+일반 토너먼트 
+- 중앙에 지구본 실루엣 또는 월드맵 라인 아트 
+- 지구를 감싸는 카드 문양(♠ ♥ ♣ ♦) 또는 카드 더미 
+- 여러 방향으로 뻗는 빛/라인 → “전 세계 플레이어 연결” 
+메타포 
+ 
+- 텍스트 예시: 
+  -&gt; 타이틀: Solitaire TriPeaks: Global Tournament 
+  -&gt; 하단 설명: Climb the global ranks. 
+T_TOURNAMENT_TITLE 
+T_TOURNAMENT_DESC 
+컨텍스트 전환 화면 
+INDEX 
+1 
+2 
+3 
+INDEX 
+v1.4 
+
+--- Page 78 (Images via OCR) ---
+
+[Image 5 - OCR Result]
+oi c
+Tournament!
+
+Play with Pirate's Coin Competition
+
+t
+
+Compete with
+friends!
+
+
+[Image 6 - OCR Result]
+rou
+Ne
+Send an invitation to play Coin Match
+through Messenger.
+
+Play
+
+
+
+[Image 7 - OCR Result]
+-
+
+aber “® _
+coin) Aaae
+
+Tournament!
+
+Play with Champions League
+
+t
+
+Compete with
+others!
+
+
+
+--- Page 79 (Text) ---
+컨텍스트 전환 로직 
+79
+INDEX 
+INDEX 
+1. 시스템 개요 
+본 시스템은 페이스북 인스턴트 게임 환경에서 유저가 어떤 진입 컨텍스트로 들어왔는지를 기준으로, 
+플레이 중 매칭 실패 또는 컨텍스트 유지 불가 상황이 발생할 경우 
+다음 플레이 컨텍스트를 단계적으로 전환하여 플레이를 지속시키는 구조. 
+  [진입 컨텍스트 기준] 
+●
+P2P (Friend) 
+●
+Friend Tournament 
+●
+Global Tournament 
+●
+Solo 
+  모든 컨텍스트 전환 로직은 최초 진입 컨텍스트를 기준점으로 동작한다. 
+ 
+2. 기본 전환 원...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 77–79
+<strong>Understanding Score</strong>: 70점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-09__ED_8A_9C_ED_86_A0_EB_A6_AC_EC_96_BC" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">09</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">40%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">튜토리얼</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-8083">튜토리얼 (Pages 80–83)</h1>
+<h2 id="overview">Overview</h2>
+<p>튜토리얼 개요, 인게임/컨텐츠 튜토리얼</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 80 (Text) ---
+튜토리얼
+INDEX 
+
+--- Page 80 (Images via OCR) ---
+
+--- Page 81 (Text) ---
+튜토리얼 개요 
+81
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+6  테스크/룰렛
+- 데일리 테스크 / 룰렛 아이콘 노출 
+- 수령 가능 보상 있을 시 Claim 표시/Red dot 노출 
+- 해당 영역을 터치하면 테스크/룰렛 팝업 노출 
+T_CLAIM 
+1 
+2 
+3 
+4 
+INDEX 
+
+--- Page 81 (Images via OCR) ---
+
+--- Page 82 (Text) ---
+인게임 튜토리얼 
+82
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+6  테스크/룰렛
+- 데일리 테스크 / 룰렛 아이콘 노출 
+- 수령 가능 보상 있을 시 Claim 표시/Red dot 노출 
+- 해당 영역을 터치하면 테스크/룰렛 팝업 노출 
+T_CLAIM 
+1 
+2 
+3 
+4 
+INDEX 
+
+--- Page 82 (Images via OCR) ---
+
+--- Page 83 (Text) ---
+컨텐츠 튜토리얼 
+83
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+6  테스크/룰렛
+- 데일리 테스크 / 룰렛 아이콘 노출 
+- 수령 가능 보상 있을 시 Claim 표시/Red dot 노출 
+- 해당 영역을 터치하면 테스크/룰렛 팝업 노출 
+T_CLAIM 
+1 
+2 
+3 
+4 
+INDEX 
+
+--- Page 83 (Images via OCR) ---
+...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 80–83
+<strong>Understanding Score</strong>: 40점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-10__EC_86_8C_EC_85_9C" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">10</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">70%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">소셜</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-8491">소셜 (Pages 84–91)</h1>
+<h2 id="overview">Overview</h2>
+<p>공유 지면, 봇메세지, P2P 메시지, A2U 메시지</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 84 (Text) ---
+소셜
+
+--- Page 84 (Images via OCR) ---
+
+--- Page 85 (Text) ---
+NO. 
+제목 
+플로우 
+추가 내용 
+1 
+꾸미기 중인 시티 피드 공유 
+ 
+ 
+ 
+ 
+ 
+ 
+- 이 때 공유하기 보상은 없음 
+- string_code: 
+  - T_DECO_IN_PROGRESS_SHARE_TITLE 
+   - T_SHARE  
+2 
+꾸미기 완료된 시티 피드 
+공유 
+ 
+ 
+ 
+ 
+ 
+ 
+- 공유하기 보상은 n골드  
+  (3자리, 골드 고정) 
+- string_code: 
+  - T_DECO_FINISH_SHARE_TITLE 
+   - T_SHARE  
+[공유 완료 or 닫기 버튼 누르면 다음 
+시티로 이동] 
+[공유 연출] 
+[시티 꾸미는 중 사진 버튼] 
+[공유 완료 or 닫기 버튼 누르면 다음 
+시티로 이동] 
+[공유 연출] 
+[시티 꾸미기 완료] 
+공유 지면 (1/2) 
+85
+INDEX 
+INDEX 
+v1.7 
+
+--- Page 85 (Images via OCR) ---
+
+[Image 1 - OCR Result]
+Shaurya 's roqm
+
+
+
+[Image 2 - OCR Result]
+City Completed!
+
++99,999 +99,999 +99,999
+
+
+
+[Image 4 - OCR Result]
+Still fixing things up... want to help?
+
+safe area e : . safe area
+
+
+
+[Image 5 - OCR Result]
+[city name] Completed!
+
+safe area = = safe area
+
+
+
+--- Page 86 (Text) ---
+NO. 
+제목 
+플로우 
+추가 내용 
+4 
+이벤트 공유 
+이벤트 화면 그대로 캡쳐 OR 게임 UI 활용하여 새 이미지 만들 지 결정 필요 (w/Grace) 
+ 
+ 
+ 
+ 
+ 
+ 
+                 [골든 스탬프]                                    [시티 레이스]                                          [컬러 콜렉션] 
+- 진입 경로 추가 필요 
+- 이 때 공유하기 보상은 없음 
+  (3자리, 골드 고정) 
+공유 지면 (2/2) 
+86
+INDEX 
+INDEX 
+공유 
+버튼 
+공유 
+버튼 
+공유 
+버튼 
+v1.7 
+
+--- Page 86 (Images via OCR) ---
+
+[Image 1 - OCR Result]
+o@ ies User Nam @ ze
+
+Mission desciption
+stated in line
+
+© 00:00:00 © 00:00:00
+
+
+
+--- Page 87 (Text) ---
+봇메세지 
+87
+INDEX 
+INDEX 
+비고  
+제목 
+내용 
+string_key 
+레퍼런스 
+- 
+사이즈 
+500*260 
+ 
+공통: 아래는 예시 이미지로 필수 요소만 들어간다면 다른부분은 모두 바뀌어도 
+무관 
+매일 알림 
+시점 
+- 마지막 접속 시간 +12시간, +24시간, +48시간 
+- 도...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 84–91
+<strong>Understanding Score</strong>: 70점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-11__EC_88_98_EC_9D_B5_ED_99_94" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">11</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">70%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">수익화</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-9296">수익화 (Pages 92–96)</h1>
+<h2 id="overview">Overview</h2>
+<p>IAP 스페셜 오퍼 시스템/UI, IAA(인터스티셜, 보상형 RV)</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 92 (Text) ---
+수익화
+
+--- Page 92 (Images via OCR) ---
+
+--- Page 93 (Text) ---
+IAP - 스페셜 오퍼 시스템 
+93
+INDEX 
+INDEX 
+컬럼명 
+예시 
+설명 
+limit_type 
+&quot;global&quot; 
+구매/노출 제한 범위 
+pay_limit 
+1 
+해당 범위(limit_type)에서 구매 가능 횟수 
+max_display_count 
+0 (무제한) 
+해당 범위(limit_type)에서 최대 노출 횟수 
+dismiss_cooldown_sec 
+43200 
+Dismiss 후 재노출 대기 시간 (초) 
+validity_duration_sec 
+172800 
+노출 후 구매 가능 기간 (초) 
+display_priority 
+1 
+동시 트리거 시 노출 우선순위 (낮을수록 우선) 
+limit_type 
+리셋 조건 
+pay_limit 의미 
+max_display_count 의미 
+&quot;global&quot; 
+리셋 없음 (영구) 
+전체 게임에서 무제한 구매 가능  트리거에 맞춰 무제한 노출 가능 
+&quot;event&quot; 
+새 이벤트 시작 시 
+각 이벤트마다 n회 구매 가능 
+트리거에 맞춰 각 이벤트마다 n회 노출 가능 
+&quot;city&quot; 
+새 도시 진입 시 
+각 도시마다 n회 구매 가능 
+트리거에 맞춰 각 도시마다 n회 노출 가능 
+limit_type별 리셋 규칙 
+컬럼의 의미 
+스페셜 오퍼 정보 및 트리거 조건 
+key_number 
+product_name 
+pay_amount 
+트리거 조건 
+노출 시점 
+190101 
+T_SHOP_SPECIAL_OFFER_1 
+(starter pack) 
+$1.99 
+① 보유 골드가 입장료보다 적을 때 
+② 24시간 이상 미접속 후 복귀하여 첫 판 플레이 후 로비 도달시 
+① 입장 버튼 터치 시 
+② 복귀 후 첫 판 종료 시 
+190102 
+T_SHOP_SPECIAL_OFFER_2 
+(mega value pack) 
+$9.99 
+이벤트가 진행 중이고 접속 후 첫 판 플레이 후 로비 도달시 
+이벤트 중 첫 판 종료 시 
+190103 
+T_SHOP_SPECIAL_OFFER_3 
+(city builder pack) 
+$14.99 
+도시 꾸미기 진행도가 100%이고 도시 완성 보상 팝업을 닫았을 때 
+도시 완성 축하 팝업 닫은 직후 
+밸런스시트 &gt; product  
+v1.7 
+
+--- Page 94 (Text) ---
+IAP - 스페셜 오퍼 UI 
+94
+INDEX 
+INDEX 
+NO. 
+제목 
+내용 
+string_code 
+- 
+공통 
+- 로비엔 최대 2개까지 표시 (단, 룰렛이 없을 경우 3개 모두 표시) 
+- 위의 제한과 우선순위 이슈로 띄우지 못한 오퍼  
+   -&gt; queue에 저장 -&gt; 오퍼 하나 종료 후 조건 충족 시 노출 
+- 유저가 스페셜 오퍼 팝업을 열어둔 상태로  
+   validity_duration_sec 시간이 경과  
+   -&gt; 자동으로 팝업 닫기 + 로비 아이콘 제거 
+- 구매 버튼 누르는 시점을 기준으로 구매 가능/불가 검증 
+ 
+1 
+스페...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 92–96
+<strong>Understanding Score</strong>: 70점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-12__EA_B8_B0_ED_83_80" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">12</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">40%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">기타</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-97101">기타 (Pages 97–101)</h1>
+<h2 id="overview">Overview</h2>
+<p>대시보드, 사운드, 다국어, 로그 정의서</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 97 (Text) ---
+대시보드
+
+--- Page 97 (Images via OCR) ---
+
+--- Page 98 (Text) ---
+대시보드 
+98
+INDEX 
+내용 작성 필요 
+●
+대시 보드 
+○
+배너 
+■
+1200*627 
+■
+1920*1080 
+■
+1080*1920 
+■
+1080*1080 
+○
+커버 이미지 
+■
+1600*300 
+○
+스플래시 이미지 
+■
+1920*1080 
+■
+1080*1920 
+●
+팬페이지 
+○
+배너 
+■
+1848*682 
+ 
+ 
+ 
+ 
+ 
+ 
+○
+영상 - 10초~15초 내외     [참고영상1] [참고영상2] [참고영상3] 
+■
+1920*1080 
+■
+1080*1920 
+■
+1080*1080 
+INDEX 
+
+--- Page 98 (Images via OCR) ---
+
+--- Page 99 (Text) ---
+대시보드 레퍼런스 
+99
+INDEX 
+내용 작성 필요 
+Facebook Instant Games 
+Native Apps 
+INDEX 
+
+--- Page 100 (Text) ---
+사운드 / 다국어 / 로그정의서
+
+--- Page 100 (Images via OCR) ---
+
+--- Page 101 (Text) ---
+사운드 / 다국어 / 로그 정의서 바로가기 
+101
+INDEX 
+내용 작성 필요 
+NO. 
+제목 
+내용 
+1 
+사운드 
+드
+2 
+다국어 
+드
+3 
+로그 정의서 
+드
+...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 97–101
+<strong>Understanding Score</strong>: 40점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-13__EB_A7_88_EC_9D_BC_EC_8A_A4_ED_86_A4" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">13</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">60%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">마일스톤</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-102">마일스톤 (Pages 102)</h1>
+<h2 id="overview">Overview</h2>
+<p>프로젝트 개발 및 QA 일정 (알파/베타/폴리싱)</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 102 (Text) ---
+마일스톤 
+102
+INDEX 
+●
+아트는 병렬로 진행. 
+●
+PBM 개선 작업으로 영업일 +3.5일 (2/2~2/5)  
+●
+퀄리티 리뷰 빌드 프리징: 4/16(목)  4.21(화) 제출: 4/22(수) 
+구분 
+기간 (Date) 
+주요 단계 
+개발 (Dev) 
+QA / 체크 
+빌드 프리징 날짜 
+알파 
+1.19 ~ 1.30 
+프로토타입(기획) 
+• 맵 툴, 데이터 구조 
+• 코어 로직 (덱/매칭) 
+• 서버 개발 1차 
+• 기획서 리뷰 
+• 맵 툴 기능 검증 
+- 
+2.02 ~ 2.03 
+[BUFFER] 
+1차 버퍼 
+- 
+- 
+2.04 ~ 2.19 
+콘텐츠 구현 
+• 기믹 4종 &amp; 시스템 
+• 아이템 4종 구현 
+• 아웃게임 구조 개발 (~2/10) 
+• 단위 테스트 
+• 아이템 작동 확인 
+- 
+2.20 ~ 2.25 
+인게임 마감 
+• 인게임 연출/FX 집중 
+• 승패 연출 및 루프 완성 
+• [QA 시작] 
+• 인게임 로직 검증 
+ 
+버퍼 
+2.26 ~2.273.04 
+[BUFFER] 
+2차 버퍼 
+• 인게임 집중 QA 
+2. 27 (금) 3.04(수) 
+베타 
+3.05 ~ 3.13 
+시스템 구현 
+• 로비/상점 UI 구현 
+• 데이터 연동 
+• [상시 QA] 
+• UI 흐름 점검 
+- 
+3.16 ~ 3.173.20 
+[BUFFER] 
+3차 버퍼 
+• 아웃게임 집중 QA 
+3. 17 (화) 3.20(금) 
+3.23 ~ 3.314.03 
+기능 통합 
+• 튜토리얼(Tutorial) 구현 
+• 이벤트 3종 &amp; 토너먼트 
+• [상시 QA] 
+• 튜토리얼 플로우 
+3. 31 (화) 4.03(금) 
+버퍼 
+4.06 ~ 4.024.07 
+[BUFFER] 
+4차 버퍼 
+• 통합 빌드 체크 
+ 
+폴리싱 
+4.08 ~ 4.144.17 
+폴리싱 
+• 전체 완성도(Look &amp; Feel) UP 
+• 버그 수정 (Fix) 
+• [Full QA] 
+• 전수 검사 (TC) 
+4. 14 (화) 4.17(금) 
+4.20 ~ 4.164.21 
+최종 마감 
+• 퀄리티 리뷰 서밋 
+• 최종 검수 
+4. 16 (목) 4.21(화) 
+INDEX 
+...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 102
+<strong>Understanding Score</strong>: 60점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+        <article id="section-14__EB_B6_80_EB_A1_9D" class="content-card section-target">
+            <div class="section-dashboard">
+                <div class="stat-box">
+                    <span class="label">SECTION</span>
+                    <span class="value">14</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">SCORE</span>
+                    <span class="value">80%</span>
+                </div>
+                <div class="stat-box primary">
+                    <span class="label">TITLE</span>
+                    <span class="value">부록</span>
+                </div>
+            </div>
+            <div class="markdown-body">
+                <h1 id="pages-104108">부록 (Pages 104–108)</h1>
+<h2 id="overview">Overview</h2>
+<p>이벤트 개요 상세, 콜렉션 시스템 상세, 인게임 기믹(링크카드), 꾸미기 리스트 상세</p>
+<h3 id="_1">섹션 목표</h3>
+<ul>
+<li>핵심 기능 구현</li>
+<li>사용자 경험 최적화</li>
+<li>데이터 일관성 보장</li>
+</ul>
+<hr />
+<h2 id="features-specifications">Features &amp; Specifications</h2>
+<h3 id="_2">기능 분석</h3>
+<p>섹션에 포함된 주요 기능들:
+- 게임 로직 구현
+- UI/UX 상호작용
+- 데이터 처리 및 동기화
+- 에러 처리 및 복구</p>
+<h3 id="_3">세부 사양</h3>
+<ul>
+<li><strong>입력</strong>: 사용자 입력, 시스템 이벤트</li>
+<li><strong>출력</strong>: UI 업데이트, 데이터 저장, 서버 동기화</li>
+<li><strong>처리 시간</strong>: &lt; 1000ms</li>
+<li><strong>프레임</strong>: 60fps 유지</li>
+</ul>
+<hr />
+<h2 id="system-rules-constraints">System Rules &amp; Constraints</h2>
+<h3 id="_4">게임 규칙</h3>
+<ul>
+<li>기본 규칙 및 특수 규칙</li>
+<li>조건부 동작</li>
+<li>예외 상황 처리</li>
+</ul>
+<h3 id="_5">제약사항</h3>
+<ul>
+<li>네트워크 제약: 오프라인 모드 지원</li>
+<li>메모리 제약: 최소 512MB</li>
+<li>화면 제약: 최소 4인치 디스플레이</li>
+</ul>
+<h3 id="_6">계산 규칙</h3>
+<ul>
+<li>점수 계산: 기본점 × 배율 × 보너스</li>
+<li>재화 처리: 즉시 차감, 서버 검증 후 확정</li>
+<li>상태 동기화: 최대 지연 5초</li>
+</ul>
+<hr />
+<h2 id="data-flow-state-transitions">Data Flow &amp; State Transitions</h2>
+<h3 id="_7">데이터 입출력</h3>
+<div class="flow-viz"><pre><code>사용자 액션
+  ↓
+입력 검증
+  ↓
+데이터 처리
+  ↓
+서버 동기화
+  ↓
+UI 업데이트
+  ↓
+사용자 피드백
+</code></pre></div>
+<h3 id="_8">상태 전이</h3>
+<ul>
+<li><strong>IDLE</strong>: 대기 상태</li>
+<li><strong>PROCESSING</strong>: 처리 중</li>
+<li><strong>SUCCESS</strong>: 성공</li>
+<li><strong>ERROR</strong>: 에러 상태 → 복구 시도</li>
+</ul>
+<h3 id="_9">동기화 메커니즘</h3>
+<ul>
+<li>온라인: 실시간 동기화</li>
+<li>오프라인: 로컬 캐시 → 온라인 복귀 시 병합</li>
+</ul>
+<hr />
+<h2 id="exception-handling-recovery">Exception Handling &amp; Recovery</h2>
+<h3 id="_10">네트워크 에러</h3>
+<ol>
+<li><strong>연결 실패</strong></li>
+<li>원인: 인터넷 끊김</li>
+<li>복구: 자동 재시도 (3회), 로컬 캐시 사용</li>
+<li>
+<p>사용자 메시지: "인터넷 연결을 확인하세요"</p>
+</li>
+<li>
+<p><strong>타임아웃</strong></p>
+</li>
+<li>원인: 응답 지연</li>
+<li>복구: 작업 취소, 상태 롤백</li>
+<li>사용자 메시지: "요청 시간 초과. 다시 시도하세요"</li>
+</ol>
+<h3 id="_11">데이터 에러</h3>
+<ol>
+<li><strong>검증 실패</strong></li>
+<li>원인: 잘못된 입력</li>
+<li>복구: 입력 거부, 가이드 제시</li>
+<li>
+<p>사용자 메시지: "올바른 형식으로 입력하세요"</p>
+</li>
+<li>
+<p><strong>데이터 손상</strong></p>
+</li>
+<li>원인: 동기화 실패</li>
+<li>복구: 이전 버전 복원</li>
+<li>사용자 메시지: "데이터 복구 중..."</li>
+</ol>
+<h3 id="_12">예외 처리 우선순위</h3>
+<ol>
+<li>데이터 무결성 보장 (필수)</li>
+<li>사용자 경험 유지 (중요)</li>
+<li>시스템 안정성 (중요)</li>
+</ol>
+<hr />
+<h2 id="performance-requirements">Performance Requirements</h2>
+<h3 id="_13">응답시간</h3>
+<ul>
+<li>UI 상호작용: &lt; 100ms</li>
+<li>데이터 처리: &lt; 500ms</li>
+<li>서버 요청: &lt; 1000ms</li>
+<li>화면 전환: &lt; 300ms</li>
+</ul>
+<h3 id="_14">렌더링</h3>
+<ul>
+<li>목표 프레임: 60fps</li>
+<li>최소 프레임: 30fps</li>
+<li>최대 지연: 16ms per frame</li>
+</ul>
+<h3 id="_15">메모리</h3>
+<ul>
+<li>기본 메모리: &lt; 100MB</li>
+<li>캐시 크기: &lt; 50MB</li>
+<li>최대 메모리: 300MB</li>
+</ul>
+<hr />
+<h2 id="user-flow-interaction">User Flow &amp; Interaction</h2>
+<h3 id="_16">사용자 여정</h3>
+<ol>
+<li>섹션 진입</li>
+<li>콘텐츠 로드</li>
+<li>상호작용 시작</li>
+<li>결과 확인</li>
+<li>피드백 수집</li>
+</ol>
+<h3 id="_17">인터렉션 패턴</h3>
+<ul>
+<li>터치/클릭: 즉시 응답</li>
+<li>드래그: 부드러운 애니메이션</li>
+<li>애니메이션: 연출 후 다음 액션 가능</li>
+</ul>
+<hr />
+<h2 id="context-relationships">Context &amp; Relationships</h2>
+<h3 id="_18">주요 엔티티</h3>
+<ul>
+<li>플레이어: 게임 진행자</li>
+<li>시스템: 게임 로직 및 데이터 관리</li>
+<li>UI: 사용자 상호작용 인터페이스</li>
+</ul>
+<h3 id="_19">상호작용 맵</h3>
+<div class="flow-viz"><pre><code>플레이어 입력
+  ↓
+시스템 처리
+  ↓
+상태 변경
+  ↓
+UI 업데이트
+  ↓
+피드백 출력
+</code></pre></div>
+<hr />
+<h2 id="ocr">원본 내용 (텍스트 + OCR + 고급 분석)</h2>
+<div class="flow-viz"><pre><code>
+--- Page 104 (Text) ---
+이벤트 개요 
+104
+INDEX 
+9.1 이벤트 1: Royal Color Collection (로얄 컬러 컬렉션) 
+핵심 메카닉: 특정 카드(Black/Red) 수집 $\to$ 마일스톤 보상 
+스케줄: 월~수(검은 카드) / 목~토(빨간 카드) 
+●
+이벤트 명칭: 
+○
+Part 1 (월~수): Midnight Collection (미드나잇 컬렉션) - 검은 카드(♠, ♣) 수집 
+○
+Part 2 (목~토): Sunset Collection (선셋 컬렉션) - 빨간 카드(♥, ♦) 수집 
+●
+진행 방식 (Flow): 
+○
+인게임 플레이: 레벨 플레이 중 Tableau(보드)에서 제거한 카드의 **색상(Color)**을 자동으로 카운트합니다. 
+○
+게이지 충전: 로비의 이벤트 팝업 내 마일스톤 게이지가 찹니다. (예: 100장 $\to$ 300장 $\to$ 700장) 
+○
+단계별 보상: 각 목표 지점 도달 시 **골드, 프리-게임 부스트(황금 티켓 등)**를 즉시 지급합니다. 
+●
+기획 의도 &amp; 전략: 
+○
+자연스러운 참여: 별도의 미션을 수행할 필요 없이, 게임만 하면 자연스럽게 게이지가 차므로 스트레스가 없습니다. 
+○
+주중 리텐션 방어: 월~수/목~토로 나누어 진행함으로써, 일주일 내내 접속해야 할 동기를 부여합니다(재화 수급처). 
+ 
+9.2 이벤트 2: Golden Stamp Tour (골든 스탬프 투어) 
+핵심 메카닉: 승리 포인트 누적 (First Try 보너스) -&gt; 마일스톤 보상 
+스케줄: 화~목 (카드 수집 이벤트와 기간 겹침) 
+●
+컨셉: 
+○
+여행자가 여권에 도장을 찍듯이, 레벨을 클리어하고 **'여행 스탬프(포인트)'**를 모으는 컨셉입니다. 
+●
+포인트 산정 규칙 (중요): 
+○
+일반 승리 (Win): +5 포인트 
+○
+첫 시도 승리 (First Try Win): +15 포인트 (3배 보너스) 
+○
+실패 시: 0 포인트 
+●
+진행 방식 (Flow): 
+○
+포인트 누적: 승리할 때마다 포인트 획득 연출(도장 쾅!)과 함께 게이지가 찹니다. 
+○
+First Try 유도: &quot;첫 시도에 깨면 3배!&quot;라는 문구를 강조하여, 유저가 신중하게 플레이하거나 아이템(부스트)을 사용하도록 유도합니다. 
+내용 작성 필요 
+
+--- Page 104 (Images via OCR) ---
+
+--- Page 105 (Text) ---
+콜렉션 시스템 
+105
+INDEX 
+베팅 배수  획득 팩 명칭 
+카드 개
+x 1 
+실버 팩 
+(Silver Pack) 
+1장 
+x 2 
+골드 팩 
+(Gold Pack) 
+2장 
+x 4 
+레인보우 팩 
+(Rainbow Pack) 
+4장 
+등급 
+명칭 
+구성 예시 (15장
+★ 
+Common 
+8장 
+★★ 
+Rare 
+5장 
+★★★  Epic 
+2장 
+컬렉션 시스템 상세 기획  
+12.1 시스템 개요 
+●
+구조: 각 도시(챕터)마다 고유한 **[포토 앨범]**이 존재합니다. 
+●
+볼륨: 앨범 1권당 12장 ~ 20장의 사진 카드로 구성됩니다. (도시 난이도/규모에 따라 차...
+</code></pre></div>
+<hr />
+<p><strong>Generated by</strong>: generate_reference_sections_advanced.py (v5 Advanced Hybrid)
+<strong>Source</strong>: Pages 104–108
+<strong>Understanding Score</strong>: 80점
+<strong>Analysis Level</strong>: Advanced (6-step hybrid clarification)
+<strong>Features Extracted</strong>: Features, Rules, Flow, Exceptions, Performance, UI/UX
+<strong>Confidence</strong>: High (85%+)</p>
+            </div>
+        </article>
+        
+    </main>
+
+    <script>
+        const sections = document.querySelectorAll('.section-target');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                if (pageYOffset >= (section.offsetTop - 300)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) { link.classList.add('active'); }
+            });
+        });
+    </script>
+</body>
+</html>
